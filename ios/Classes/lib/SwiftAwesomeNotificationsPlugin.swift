@@ -370,25 +370,27 @@ public class SwiftAwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
     
     private func receiveAction(jsonData: String?, actionKey:String?, userText:String?){
         Log.d(SwiftAwesomeNotificationsPlugin.TAG, "NOTIFICATION RECEIVED")
-        
-        if(SwiftAwesomeNotificationsPlugin.appLifeCycle == .AppKilled){
+        do{ if(SwiftAwesomeNotificationsPlugin.appLifeCycle == .AppKilled){
             fireBackgroundLostEvents()
         }
         
         if #available(iOS 10.0, *) {
+          
             let actionReceived:ActionReceived? = NotificationBuilder.buildNotificationActionFromJson(jsonData: jsonData, actionKey: actionKey, userText: userText)
-            
-            if actionReceived!.dismissedDate == nil {
+              if let actionReceived = actionReceived {
+                if actionReceived!.dismissedDate == nil {
                 Log.d(SwiftAwesomeNotificationsPlugin.TAG, "NOTIFICATION RECEIVED")
                 flutterChannel?.invokeMethod(Definitions.CHANNEL_METHOD_RECEIVED_ACTION, arguments: actionReceived?.toMap())
-            }
-            else {
+            }else {
                 Log.d(SwiftAwesomeNotificationsPlugin.TAG, "NOTIFICATION DISMISSED")
                 flutterChannel?.invokeMethod(Definitions.CHANNEL_METHOD_NOTIFICATION_DISMISSED, arguments: actionReceived?.toMap())
             }
+            }          
         } else {
             // Fallback on earlier versions
         }
+        }catch{}
+       
     }
     
     @available(iOS 10.0, *)
