@@ -293,13 +293,13 @@ public class SwiftAwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
                         
             let channel:NotificationChannelModel? = ChannelManager.getChannelByKey(channelKey: pushNotification!.content!.channelKey!)
             do{
-                alertOnlyOnceNotification(
+             try  alertOnlyOnceNotification(
                 channel?.onlyAlertOnce,
                 notificationReceived: notificationReceived!,
                 completionHandler: completionHandler
             )
             }catch{
-                
+
             }
             
             
@@ -374,7 +374,9 @@ public class SwiftAwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
     
     private func receiveAction(jsonData: String?, actionKey:String?, userText:String?){
         Log.d(SwiftAwesomeNotificationsPlugin.TAG, "NOTIFICATION RECEIVED")
-        do{ if(SwiftAwesomeNotificationsPlugin.appLifeCycle == .AppKilled){
+        do{
+            
+            try if(SwiftAwesomeNotificationsPlugin.appLifeCycle == .AppKilled){
             fireBackgroundLostEvents()
         }
         
@@ -382,12 +384,12 @@ public class SwiftAwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
           
             let actionReceived:ActionReceived? = NotificationBuilder.buildNotificationActionFromJson(jsonData: jsonData, actionKey: actionKey, userText: userText)
               if let actionReceived = actionReceived {
-                if actionReceived!.dismissedDate == nil {
+                if actionReceived.dismissedDate == nil {
                 Log.d(SwiftAwesomeNotificationsPlugin.TAG, "NOTIFICATION RECEIVED")
-                flutterChannel?.invokeMethod(Definitions.CHANNEL_METHOD_RECEIVED_ACTION, arguments: actionReceived?.toMap())
+                flutterChannel?.invokeMethod(Definitions.CHANNEL_METHOD_RECEIVED_ACTION, arguments: actionReceived.toMap())
             }else {
                 Log.d(SwiftAwesomeNotificationsPlugin.TAG, "NOTIFICATION DISMISSED")
-                flutterChannel?.invokeMethod(Definitions.CHANNEL_METHOD_NOTIFICATION_DISMISSED, arguments: actionReceived?.toMap())
+                flutterChannel?.invokeMethod(Definitions.CHANNEL_METHOD_NOTIFICATION_DISMISSED, arguments: actionReceived.toMap())
             }
             }          
         } else {
