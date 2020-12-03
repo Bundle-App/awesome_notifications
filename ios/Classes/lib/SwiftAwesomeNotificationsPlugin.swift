@@ -292,12 +292,16 @@ public class SwiftAwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
         if(notificationReceived != nil){
                         
             let channel:NotificationChannelModel? = ChannelManager.getChannelByKey(channelKey: pushNotification!.content!.channelKey!)
-            
-            alertOnlyOnceNotification(
+            do{
+                alertOnlyOnceNotification(
                 channel?.onlyAlertOnce,
                 notificationReceived: notificationReceived!,
                 completionHandler: completionHandler
             )
+            }catch{
+                
+            }
+            
             
             if CreatedManager.getCreatedByKey(id: notificationReceived!.id!) != nil {
                 SwiftAwesomeNotificationsPlugin.createEvent(notificationReceived: notificationReceived!)
