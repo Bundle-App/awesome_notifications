@@ -292,15 +292,12 @@ public class SwiftAwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
         if(notificationReceived != nil){
                         
             let channel:NotificationChannelModel? = ChannelManager.getChannelByKey(channelKey: pushNotification!.content!.channelKey!)
-            do{
-             try  alertOnlyOnceNotification(
+             alertOnlyOnceNotification(
                 channel?.onlyAlertOnce,
                 notificationReceived: notificationReceived!,
                 completionHandler: completionHandler
             )
-            }catch{
-
-            }
+             
             
             
             if CreatedManager.getCreatedByKey(id: notificationReceived!.id!) != nil {
@@ -374,9 +371,7 @@ public class SwiftAwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
     
     private func receiveAction(jsonData: String?, actionKey:String?, userText:String?){
         Log.d(SwiftAwesomeNotificationsPlugin.TAG, "NOTIFICATION RECEIVED")
-        do{
-            
-            try if(SwiftAwesomeNotificationsPlugin.appLifeCycle == .AppKilled){
+         if(SwiftAwesomeNotificationsPlugin.appLifeCycle == .AppKilled){
             fireBackgroundLostEvents()
         }
         
@@ -395,7 +390,7 @@ public class SwiftAwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
         } else {
             // Fallback on earlier versions
         }
-        }catch{}
+         
        
     }
     
